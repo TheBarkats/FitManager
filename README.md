@@ -1,16 +1,26 @@
-# fit_manager
+# FitManager
+Este proyecto es una aplicación movil para el registro y seguimiento de las personas en un gimnasio. 
 
-A new Flutter project.
+## Reglas de Colaboración (GitHub Flow)
 
-## Getting Started
+- **Ramas**
+  - `main`: rama estable y protegida. Nunca se codea directo aquí.
+  - Feature: `feature/<modulo>-<breve-descripcion>` (ej: `feature/perfil-medidas`).
+  - Hotfix: `hotfix/<breve-descripcion>` para arreglos urgentes.
+  - Chore/Docs: `chore/...`, `docs/...` para tareas de soporte.
 
-This project is a starting point for a Flutter application.
+- **Flujo**
+  1) Crea un *issue* → 2) Crea tu rama desde `main` → 3) Commits pequeños (Conv. Commits: `feat: ...`, `fix: ...`, `docs: ...`, `chore: ...`) →  
+  4) Abre **Pull Request** hacia `main` enlazando el issue → 5) **1+ review** aprobatoria → 6) **Squash & merge** → 7) Borra la rama.
 
-A few resources to get you started if this is your first Flutter project:
+- **Pull Requests**
+  - Incluye: objetivo, cómo probar, screenshots si aplica.
+  - Máximo ~300–400 líneas por PR cuando sea posible.
+  - Resolver conversaciones antes de merge.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- **Calidad**
+  - Sin secretos en el repo. Usa `.env` local y variables de entorno.
+  - Tests y linters (si están configurados) deben pasar antes de merge.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- **Releases & tags** (opcional)
+  - Versionado semántico: `vX.Y.Z` en cada entrega importante.
