@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/social_login_button.dart';
+import 'register_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -49,12 +50,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _handleCreateAccount() {
-    // TODO: Navegar a la pantalla de registro
-    print('Create account');
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => RegisterPage()),
-    // );
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const RegisterPage()),
+    );
   }
 
   @override
