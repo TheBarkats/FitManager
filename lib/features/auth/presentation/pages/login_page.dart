@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/social_login_button.dart';
-import 'register_page.dart';
+import '../providers/auth_provider.dart';
+// import 'register_page.dart';
+import 'evidence_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -25,12 +28,30 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _handleLogin() {
+  Future<void> _handleLogin() async {
     if (_formKey.currentState!.validate()) {
-      // TODO: Implementar lógica de login
-      // debugPrint('Username: ${_usernameController.text}');
-      // debugPrint('Password: ${_passwordController.text}');
-      // debugPrint('Remember Me: $_rememberMe');
+      final authProvider = context.read<AuthProvider>();
+      
+      final success = await authProvider.login(
+        email: _usernameController.text.trim(),
+        password: _passwordController.text,
+      );
+
+      if (success && mounted) {
+        // Navegar a la pantalla de evidencia
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const EvidencePage()),
+        );
+      } else if (mounted) {
+        // Mostrar error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(authProvider.errorMessage ?? 'Error en el login'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -49,17 +70,21 @@ class _LoginPageState extends State<LoginPage> {
     // debugPrint('Forgot password');
   }
 
-  void _handleCreateAccount() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const RegisterPage()),
-    );
-  }
+  // void _handleCreateAccount() {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => const RegisterPage()),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
+    return Consumer<AuthProvider>(
+      builder: (context, authProvider, _) {
+        return Scaffold(
+          body: Stack(
+            children: [
+              Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -240,31 +265,17 @@ class _LoginPageState extends State<LoginPage> {
                           
                           SizedBox(height: 32),
                           
-                          // Botón de crear cuenta
+                          // Nota de credenciales de prueba
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "¿No tienes una cuenta? ",
+                                "Credenciales de prueba:\nadmin@alpha.com / 12345678",
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color: AppColors.textPrimary,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: _handleCreateAccount,
-                                style: TextButton.styleFrom(
-                                  padding: EdgeInsets.zero,
-                                  minimumSize: Size(0, 0),
-                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                ),
-                                child: Text(
-                                  'Crear cuenta',
-                                  style: TextStyle(
-                                    color: AppColors.primary,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  color: AppColors.textSecondary,
+                                  fontSize: 12,
+                                  fontStyle: FontStyle.italic,
                                 ),
                               ),
                             ],
@@ -280,7 +291,22 @@ class _LoginPageState extends State<LoginPage> {
             ],
           ),
         ),
-      ),
+              ),
+              
+              // Loading overlay
+              if (authProvider.isLoading)
+                Container(
+                  color: Colors.black.withValues(alpha: 0.5),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 
