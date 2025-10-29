@@ -97,13 +97,13 @@ class _LoginPageState extends State<LoginPage> {
                           
                           // Campo de Username
                           CustomTextField(
-                            label: 'Username',
-                            hint: 'Enter User ID or Email',
+                            label: 'Usuario',
+                            hint: 'Ingresa tu correo o usuario',
                             controller: _usernameController,
                             keyboardType: TextInputType.emailAddress,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter your username or email';
+                                return 'Por favor ingresa tu usuario o correo';
                               }
                               return null;
                             },
@@ -113,8 +113,8 @@ class _LoginPageState extends State<LoginPage> {
                           
                           // Campo de Password
                           CustomTextField(
-                            label: 'Password',
-                            hint: 'Enter Password',
+                            label: 'Contraseña',
+                            hint: 'Ingresa tu contraseña',
                             controller: _passwordController,
                             obscureText: _obscurePassword,
                             suffixIcon: IconButton(
@@ -132,10 +132,10 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter your password';
+                                return 'Por favor ingresa tu contraseña';
                               }
                               if (value.length < 6) {
-                                return 'Password must be at least 6 characters';
+                                return 'La contraseña debe tener al menos 6 caracteres';
                               }
                               return null;
                             },
@@ -149,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: TextButton(
                               onPressed: _handleForgotPassword,
                               child: Text(
-                                'Forgot Password?',
+                                '¿Olvidaste tu contraseña?',
                                 style: TextStyle(
                                   color: AppColors.textPrimary,
                                   fontSize: 14,
@@ -176,7 +176,7 @@ class _LoginPageState extends State<LoginPage> {
                                     activeColor: AppColors.primary,
                                   ),
                                   Text(
-                                    'Remember Me',
+                                    'Recordarme',
                                     style: TextStyle(
                                       color: AppColors.textPrimary,
                                       fontSize: 14,
@@ -192,7 +192,7 @@ class _LoginPageState extends State<LoginPage> {
                                     vertical: 8,
                                   ),
                                   child: Text(
-                                    'Sign in',
+                                    'Iniciar sesión',
                                     style: TextStyle(fontSize: 16),
                                   ),
                                 ),
@@ -245,7 +245,7 @@ class _LoginPageState extends State<LoginPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "Don't have an account? ",
+                                "¿No tienes una cuenta? ",
                                 style: TextStyle(
                                   color: AppColors.textPrimary,
                                   fontSize: 14,
@@ -259,7 +259,7 @@ class _LoginPageState extends State<LoginPage> {
                                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 ),
                                 child: Text(
-                                  'Create Account',
+                                  'Crear cuenta',
                                   style: TextStyle(
                                     color: AppColors.primary,
                                     fontSize: 14,

@@ -76,7 +76,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                     const Text(
-                      'Back',
+                      'Atrás',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -99,7 +99,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                         // Title
                         const Text(
-                          'Create Account',
+                          'Crear Cuenta',
                           style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
@@ -109,7 +109,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         const SizedBox(height: 8),
                         const Text(
-                          'Sign up to get started',
+                          'Regístrate para comenzar',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.white70,
@@ -121,15 +121,15 @@ class _RegisterPageState extends State<RegisterPage> {
                         // Full Name Field
                         CustomTextField(
                           controller: _nameController,
-                          label: 'Full Name',
-                          hint: 'Enter your full name',
+                          label: 'Nombre Completo',
+                          hint: 'Ingresa tu nombre completo',
                           prefixIcon: Icons.person_outline,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your name';
+                              return 'Por favor ingresa tu nombre';
                             }
                             if (value.length < 3) {
-                              return 'Name must be at least 3 characters';
+                              return 'El nombre debe tener al menos 3 caracteres';
                             }
                             return null;
                           },
@@ -139,16 +139,16 @@ class _RegisterPageState extends State<RegisterPage> {
                         // Email Field
                         CustomTextField(
                           controller: _emailController,
-                          label: 'Email',
-                          hint: 'Enter your email',
+                          label: 'Correo Electrónico',
+                          hint: 'Ingresa tu correo',
                           prefixIcon: Icons.email_outlined,
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your email';
+                              return 'Por favor ingresa tu correo';
                             }
                             if (!value.contains('@') || !value.contains('.')) {
-                              return 'Please enter a valid email';
+                              return 'Por favor ingresa un correo válido';
                             }
                             return null;
                           },
@@ -158,8 +158,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         // Password Field
                         CustomTextField(
                           controller: _passwordController,
-                          label: 'Password',
-                          hint: 'Enter your password',
+                          label: 'Contraseña',
+                          hint: 'Ingresa tu contraseña',
                           prefixIcon: Icons.lock_outline,
                           obscureText: _obscurePassword,
                           suffixIcon: IconButton(
@@ -177,10 +177,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter a password';
+                              return 'Por favor ingresa una contraseña';
                             }
                             if (value.length < 6) {
-                              return 'Password must be at least 6 characters';
+                              return 'La contraseña debe tener al menos 6 caracteres';
                             }
                             return null;
                           },
@@ -190,8 +190,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         // Confirm Password Field
                         CustomTextField(
                           controller: _confirmPasswordController,
-                          label: 'Confirm Password',
-                          hint: 'Confirm your password',
+                          label: 'Confirmar Contraseña',
+                          hint: 'Confirma tu contraseña',
                           prefixIcon: Icons.lock_outline,
                           obscureText: _obscureConfirmPassword,
                           suffixIcon: IconButton(
@@ -209,10 +209,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please confirm your password';
+                              return 'Por favor confirma tu contraseña';
                             }
                             if (value != _passwordController.text) {
-                              return 'Passwords do not match';
+                              return 'Las contraseñas no coinciden';
                             }
                             return null;
                           },
@@ -222,20 +222,20 @@ class _RegisterPageState extends State<RegisterPage> {
                         // Age Field
                         CustomTextField(
                           controller: _ageController,
-                          label: 'Age',
-                          hint: 'Enter your age',
+                          label: 'Edad',
+                          hint: 'Ingresa tu edad',
                           prefixIcon: Icons.cake_outlined,
                           keyboardType: TextInputType.number,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your age';
+                              return 'Por favor ingresa tu edad';
                             }
                             final age = int.tryParse(value);
                             if (age == null) {
-                              return 'Please enter a valid number';
+                              return 'Por favor ingresa un número válido';
                             }
                             if (age < 13 || age > 120) {
-                              return 'Please enter a valid age';
+                              return 'Por favor ingresa una edad válida';
                             }
                             return null;
                           },
@@ -245,20 +245,20 @@ class _RegisterPageState extends State<RegisterPage> {
                         // Height Field (in cm)
                         CustomTextField(
                           controller: _heightController,
-                          label: 'Height (cm)',
-                          hint: 'Enter your height in centimeters',
+                          label: 'Altura (cm)',
+                          hint: 'Ingresa tu altura en centímetros',
                           prefixIcon: Icons.height,
                           keyboardType: TextInputType.numberWithOptions(decimal: true),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your height';
+                              return 'Por favor ingresa tu altura';
                             }
                             final height = double.tryParse(value);
                             if (height == null) {
-                              return 'Please enter a valid number';
+                              return 'Por favor ingresa un número válido';
                             }
                             if (height < 50 || height > 300) {
-                              return 'Please enter a valid height';
+                              return 'Por favor ingresa una altura válida';
                             }
                             return null;
                           },
@@ -268,20 +268,20 @@ class _RegisterPageState extends State<RegisterPage> {
                         // Initial Weight Field (in kg)
                         CustomTextField(
                           controller: _weightController,
-                          label: 'Initial Weight (kg)',
-                          hint: 'Enter your current weight',
+                          label: 'Peso Inicial (kg)',
+                          hint: 'Ingresa tu peso actual',
                           prefixIcon: Icons.monitor_weight_outlined,
                           keyboardType: TextInputType.numberWithOptions(decimal: true),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your weight';
+                              return 'Por favor ingresa tu peso';
                             }
                             final weight = double.tryParse(value);
                             if (weight == null) {
-                              return 'Please enter a valid number';
+                              return 'Por favor ingresa un número válido';
                             }
                             if (weight < 20 || weight > 500) {
-                              return 'Please enter a valid weight';
+                              return 'Por favor ingresa un peso válido';
                             }
                             return null;
                           },
@@ -300,7 +300,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                           ),
                           child: const Text(
-                            'Create Account',
+                            'Crear Cuenta',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -314,7 +314,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Text(
-                              'Already have an account? ',
+                              '¿Ya tienes una cuenta? ',
                               style: TextStyle(
                                 color: Colors.white70,
                                 fontSize: 14,
@@ -323,7 +323,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             GestureDetector(
                               onTap: () => Navigator.pop(context),
                               child: const Text(
-                                'Sign In',
+                                'Iniciar Sesión',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
