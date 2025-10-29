@@ -6,10 +6,10 @@ class SocialLoginButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const SocialLoginButton({
-    Key? key,
+    super.key,
     required this.icon,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class SocialLoginButton extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.textSecondary.withOpacity(0.3)),
+        border: Border.all(color: AppColors.textSecondary.withValues(alpha: 0.3)),
       ),
       child: IconButton(
         icon: _getIcon(),

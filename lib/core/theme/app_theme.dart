@@ -11,7 +11,7 @@ class AppTheme {
       // Input decoration theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Colors.white.withOpacity(0.8),
+        fillColor: Colors.white.withValues(alpha: 0.8),
         border: UnderlineInputBorder(
           borderSide: BorderSide(color: AppColors.textSecondary),
         ),

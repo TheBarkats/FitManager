@@ -5,7 +5,7 @@ import '../widgets/social_login_button.dart';
 import 'register_page.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -28,25 +28,25 @@ class _LoginPageState extends State<LoginPage> {
   void _handleLogin() {
     if (_formKey.currentState!.validate()) {
       // TODO: Implementar lógica de login
-      print('Username: ${_usernameController.text}');
-      print('Password: ${_passwordController.text}');
-      print('Remember Me: $_rememberMe');
+      // debugPrint('Username: ${_usernameController.text}');
+      // debugPrint('Password: ${_passwordController.text}');
+      // debugPrint('Remember Me: $_rememberMe');
     }
   }
 
   void _handleGoogleLogin() {
     // TODO: Implementar login con Google
-    print('Google login');
+    // debugPrint('Google login');
   }
 
   void _handleAppleLogin() {
     // TODO: Implementar login con Apple
-    print('Apple login');
+    // debugPrint('Apple login');
   }
 
   void _handleForgotPassword() {
     // TODO: Implementar recuperar contraseña
-    print('Forgot password');
+    // debugPrint('Forgot password');
   }
 
   void _handleCreateAccount() {

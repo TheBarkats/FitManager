@@ -12,7 +12,7 @@ class CustomTextField extends StatelessWidget {
   final IconData? prefixIcon;
 
   const CustomTextField({
-    Key? key,
+    super.key,
     required this.label,
     required this.hint,
     this.obscureText = false,
@@ -21,7 +21,7 @@ class CustomTextField extends StatelessWidget {
     this.keyboardType,
     this.suffixIcon,
     this.prefixIcon,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

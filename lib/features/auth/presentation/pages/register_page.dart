@@ -37,12 +37,12 @@ class _RegisterPageState extends State<RegisterPage> {
   void _handleRegister() {
     if (_formKey.currentState!.validate()) {
       // TODO: Implementar lógica de registro con el backend
-      print('Registering user...');
-      print('Name: ${_nameController.text}');
-      print('Email: ${_emailController.text}');
-      print('Age: ${_ageController.text}');
-      print('Height: ${_heightController.text}');
-      print('Weight: ${_weightController.text}');
+      // debugPrint('Registering user...');
+      // debugPrint('Name: ${_nameController.text}');
+      // debugPrint('Email: ${_emailController.text}');
+      // debugPrint('Age: ${_ageController.text}');
+      // debugPrint('Height: ${_heightController.text}');
+      // debugPrint('Weight: ${_weightController.text}');
     }
   }
 
