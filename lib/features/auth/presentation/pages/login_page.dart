@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/social_login_button.dart';
+import '../providers/auth_provider.dart';
 import 'register_page.dart';
+import 'evidence_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -25,12 +28,30 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _handleLogin() {
+  Future<void> _handleLogin() async {
     if (_formKey.currentState!.validate()) {
-      // TODO: Implementar lógica de login
-      // debugPrint('Username: ${_usernameController.text}');
-      // debugPrint('Password: ${_passwordController.text}');
-      // debugPrint('Remember Me: $_rememberMe');
+      final authProvider = context.read<AuthProvider>();
+      
+      final success = await authProvider.login(
+        email: _usernameController.text.trim(),
+        password: _passwordController.text,
+      );
+
+      if (success && mounted) {
+        // Navegar a la pantalla de evidencia
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const EvidencePage()),
+        );
+      } else if (mounted) {
+        // Mostrar error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(authProvider.errorMessage ?? 'Error en el login'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -58,8 +79,12 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
+    return Consumer<AuthProvider>(
+      builder: (context, authProvider, _) {
+        return Scaffold(
+          body: Stack(
+            children: [
+              Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -280,7 +305,22 @@ class _LoginPageState extends State<LoginPage> {
             ],
           ),
         ),
-      ),
+              ),
+              
+              // Loading overlay
+              if (authProvider.isLoading)
+                Container(
+                  color: Colors.black.withValues(alpha: 0.5),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 
