@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../widgets/custom_text_field.dart';
+import '../providers/auth_provider.dart';
+import 'evidence_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -34,22 +37,43 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  void _handleRegister() {
+  Future<void> _handleRegister() async {
     if (_formKey.currentState!.validate()) {
-      // TODO: Implementar lógica de registro con el backend
-      // debugPrint('Registering user...');
-      // debugPrint('Name: ${_nameController.text}');
-      // debugPrint('Email: ${_emailController.text}');
-      // debugPrint('Age: ${_ageController.text}');
-      // debugPrint('Height: ${_heightController.text}');
-      // debugPrint('Weight: ${_weightController.text}');
+      final authProvider = context.read<AuthProvider>();
+      
+      // La API de VisionTic solo requiere name, email, password
+      final success = await authProvider.register(
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
+
+      if (success && mounted) {
+        // Navegar a la pantalla de evidencia
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const EvidencePage()),
+        );
+      } else if (mounted) {
+        // Mostrar error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(authProvider.errorMessage ?? 'Error en el registro'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
+    return Consumer<AuthProvider>(
+      builder: (context, authProvider, _) {
+        return Scaffold(
+          body: Stack(
+            children: [
+              Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -343,7 +367,22 @@ class _RegisterPageState extends State<RegisterPage> {
             ],
           ),
         ),
-      ),
+              ),
+              
+              // Loading overlay
+              if (authProvider.isLoading)
+                Container(
+                  color: Colors.black.withValues(alpha: 0.5),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

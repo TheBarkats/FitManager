@@ -4,7 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/social_login_button.dart';
 import '../providers/auth_provider.dart';
-import 'register_page.dart';
+// import 'register_page.dart';
 import 'evidence_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -70,12 +70,12 @@ class _LoginPageState extends State<LoginPage> {
     // debugPrint('Forgot password');
   }
 
-  void _handleCreateAccount() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const RegisterPage()),
-    );
-  }
+  // void _handleCreateAccount() {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => const RegisterPage()),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -265,31 +265,17 @@ class _LoginPageState extends State<LoginPage> {
                           
                           SizedBox(height: 32),
                           
-                          // Botón de crear cuenta
+                          // Nota de credenciales de prueba
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "¿No tienes una cuenta? ",
+                                "Credenciales de prueba:\nadmin@alpha.com / 12345678",
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color: AppColors.textPrimary,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: _handleCreateAccount,
-                                style: TextButton.styleFrom(
-                                  padding: EdgeInsets.zero,
-                                  minimumSize: Size(0, 0),
-                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                ),
-                                child: Text(
-                                  'Crear cuenta',
-                                  style: TextStyle(
-                                    color: AppColors.primary,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  color: AppColors.textSecondary,
+                                  fontSize: 12,
+                                  fontStyle: FontStyle.italic,
                                 ),
                               ),
                             ],
