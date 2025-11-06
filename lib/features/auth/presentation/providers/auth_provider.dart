@@ -73,13 +73,13 @@ class AuthProvider extends ChangeNotifier {
       final request = LoginRequest(email: email, password: password);
       final response = await _authService.login(request);
 
-      // Guardar tokens (sensible)
+      // Guardar token (el backend solo devuelve accessToken)
       await _secureStorage.saveTokens(
-        accessToken: response.accessToken,
-        refreshToken: response.refreshToken,
+        accessToken: response.token,
+        refreshToken: null, // No implementado en el backend aún
       );
 
-      // Guardar datos del usuario (no sensible)
+      // Guardar datos del usuario
       await _prefsService.saveUserData(
         name: response.user.name,
         email: response.user.email,
@@ -98,12 +98,14 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  /// Realiza el registro
+  /// Realiza el registro de USUARIO
   Future<bool> register({
     required String name,
     required String email,
     required String password,
-    String? phone,
+    required int edad,
+    required double altura,
+    required double pesoInicial,
   }) async {
     _state = AuthState.loading;
     _errorMessage = null;
@@ -111,20 +113,22 @@ class AuthProvider extends ChangeNotifier {
 
     try {
       final request = RegisterRequest(
-        name: name,
+        nombre: name,
         email: email,
         password: password,
-        phone: phone,
+        edad: edad,
+        altura: altura,
+        pesoInicial: pesoInicial,
       );
       final response = await _authService.register(request);
 
-      // Guardar tokens (sensible)
+      // Guardar token (el backend solo devuelve accessToken)
       await _secureStorage.saveTokens(
-        accessToken: response.accessToken,
-        refreshToken: response.refreshToken,
+        accessToken: response.token,
+        refreshToken: null, // No implementado en el backend aún
       );
 
-      // Guardar datos del usuario (no sensible)
+      // Guardar datos del usuario
       await _prefsService.saveUserData(
         name: response.user.name,
         email: response.user.email,

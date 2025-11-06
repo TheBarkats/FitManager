@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../widgets/custom_text_field.dart';
 import '../providers/auth_provider.dart';
-import 'evidence_page.dart';
+import '../../../dashboard/presentation/pages/dashboard_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -41,18 +41,21 @@ class _RegisterPageState extends State<RegisterPage> {
     if (_formKey.currentState!.validate()) {
       final authProvider = context.read<AuthProvider>();
       
-      // La API de VisionTic solo requiere name, email, password
+      // Enviar TODOS los campos requeridos por el backend
       final success = await authProvider.register(
         name: _nameController.text.trim(),
         email: _emailController.text.trim(),
         password: _passwordController.text,
+        edad: int.parse(_ageController.text),
+        altura: double.parse(_heightController.text),
+        pesoInicial: double.parse(_weightController.text),
       );
 
       if (success && mounted) {
-        // Navegar a la pantalla de evidencia
+        // Navegar al dashboard
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const EvidencePage()),
+          MaterialPageRoute(builder: (context) => const DashboardPage()),
         );
       } else if (mounted) {
         // Mostrar error

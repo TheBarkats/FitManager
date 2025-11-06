@@ -1,27 +1,29 @@
+/// Modelo de solicitud para registro de USUARIO en FitManager
 class RegisterRequest {
-  final String name;
+  final String nombre;
   final String email;
   final String password;
-  final String? phone;
+  final int edad;
+  final double altura;
+  final double pesoInicial;
 
   RegisterRequest({
-    required this.name,
+    required this.nombre,
     required this.email,
     required this.password,
-    this.phone,
+    required this.edad,
+    required this.altura,
+    required this.pesoInicial,
   });
 
   Map<String, dynamic> toJson() {
-    final map = {
-      'name': name,
+    return {
+      'nombre': nombre,
       'email': email,
       'password': password,
+      'edad': edad,
+      'altura': altura,
+      'pesoInicial': pesoInicial,
     };
-    
-    if (phone != null && phone!.isNotEmpty) {
-      map['phone'] = phone!;
-    }
-    
-    return map;
   }
 }

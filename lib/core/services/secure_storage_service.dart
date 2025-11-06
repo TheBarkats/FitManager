@@ -1,6 +1,9 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 /// Servicio para manejar datos SENSIBLES en FlutterSecureStorage
+/// 
+/// NOTA: El backend de FitManager actualmente solo devuelve accessToken.
+/// RefreshToken está preparado para implementación futura.
 class SecureStorageService {
   static const String _keyAccessToken = 'access_token';
   static const String _keyRefreshToken = 'refresh_token';
@@ -17,18 +20,19 @@ class SecureStorageService {
     await _storage.write(key: _keyAccessToken, value: token);
   }
 
-  /// Guarda el refresh token
+  /// Guarda el refresh token (opcional - no implementado en backend aún)
   Future<void> saveRefreshToken(String token) async {
     await _storage.write(key: _keyRefreshToken, value: token);
   }
 
   /// Guarda ambos tokens
+  /// [refreshToken] es opcional ya que el backend no lo implementa aún
   Future<void> saveTokens({
     required String accessToken,
     String? refreshToken,
   }) async {
     await saveAccessToken(accessToken);
-    if (refreshToken != null) {
+    if (refreshToken != null && refreshToken.isNotEmpty) {
       await saveRefreshToken(refreshToken);
     }
   }

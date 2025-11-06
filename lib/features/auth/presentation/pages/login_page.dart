@@ -5,7 +5,8 @@ import '../widgets/custom_text_field.dart';
 import '../widgets/social_login_button.dart';
 import '../providers/auth_provider.dart';
 // import 'register_page.dart';
-import 'evidence_page.dart';
+// import 'evidence_page.dart';
+import '../../../dashboard/presentation/pages/dashboard_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -38,10 +39,10 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       if (success && mounted) {
-        // Navegar a la pantalla de evidencia
+        // Navegar al dashboard
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const EvidencePage()),
+          MaterialPageRoute(builder: (context) => const DashboardPage()),
         );
       } else if (mounted) {
         // Mostrar error
