@@ -11,6 +11,10 @@ class AuthService {
   /// Realiza el login
   Future<LoginResponse> login(LoginRequest request) async {
     try {
+      // Debug: imprimir lo que enviamos
+      // debugPrint('🔵 Enviando login a: $baseUrl/login');
+      // debugPrint('🔵 Body: ${jsonEncode(request.toJson())}');
+      
       final response = await http.post(
         Uri.parse('$baseUrl/login'),
         headers: {
@@ -20,16 +24,24 @@ class AuthService {
         body: jsonEncode(request.toJson()),
       );
 
+      // Debug: imprimir la respuesta
+      // debugPrint('🔵 Status code: ${response.statusCode}');
+      // debugPrint('🔵 Response body: ${response.body}');
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonResponse = jsonDecode(response.body);
         return LoginResponse.fromJson(jsonResponse);
       } else {
         final error = jsonDecode(response.body);
         throw Exception(
-          error['message'] ?? 'Error en el login: ${response.statusCode}'
+          error['message'] ?? error['error'] ?? 'Credenciales inválidas'
         );
       }
     } catch (e) {
+      // debugPrint('🔴 Error: $e');
+      if (e is Exception && e.toString().contains('Exception:')) {
+        rethrow;
+      }
       throw Exception('Error de conexión: $e');
     }
   }
