@@ -4,8 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/social_login_button.dart';
 import '../providers/auth_provider.dart';
-// import 'register_page.dart';
-// import 'evidence_page.dart';
+import 'register_page.dart';
 import '../../../dashboard/presentation/pages/dashboard_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -71,12 +70,12 @@ class _LoginPageState extends State<LoginPage> {
     // debugPrint('Forgot password');
   }
 
-  // void _handleCreateAccount() {
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(builder: (context) => const RegisterPage()),
-  //   );
-  // }
+  void _handleCreateAccount() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const RegisterPage()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -266,17 +265,26 @@ class _LoginPageState extends State<LoginPage> {
                           
                           SizedBox(height: 32),
                           
-                          // Nota de credenciales de prueba
+                          // Botón de crear cuenta
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                "Credenciales de prueba:\nadmin@alpha.com / 12345678",
-                                textAlign: TextAlign.center,
+                              const Text(
+                                '¿No tienes una cuenta? ',
                                 style: TextStyle(
                                   color: AppColors.textSecondary,
-                                  fontSize: 12,
-                                  fontStyle: FontStyle.italic,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: _handleCreateAccount,
+                                child: const Text(
+                                  'Crear cuenta',
+                                  style: TextStyle(
+                                    color: AppColors.primary,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ],

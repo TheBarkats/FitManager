@@ -47,7 +47,7 @@ class _RegisterPageState extends State<RegisterPage> {
         email: _emailController.text.trim(),
         password: _passwordController.text,
         edad: int.parse(_ageController.text),
-        altura: double.parse(_heightController.text),
+        altura: double.parse(_heightController.text)/100,
         pesoInicial: double.parse(_weightController.text),
       );
 
