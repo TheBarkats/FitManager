@@ -3,6 +3,12 @@ import 'package:provider/provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../auth/presentation/pages/login_page.dart';
+import 'edit_profile_page.dart';
+import 'notifications_page.dart';
+import 'change_password_page.dart';
+import 'language_page.dart';
+import 'help_support_page.dart';
+import 'about_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -97,25 +103,53 @@ class ProfilePage extends StatelessWidget {
                       icon: Icons.person_outline_rounded,
                       title: 'Editar Perfil',
                       subtitle: 'Actualiza tu información personal',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const EditProfilePage(),
+                          ),
+                        );
+                      },
                     ),
                     _buildMenuItem(
                       icon: Icons.notifications_outlined,
                       title: 'Notificaciones',
                       subtitle: 'Administra tus notificaciones',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const NotificationsPage(),
+                          ),
+                        );
+                      },
                     ),
                     _buildMenuItem(
                       icon: Icons.lock_outline_rounded,
                       title: 'Cambiar Contraseña',
                       subtitle: 'Actualiza tu contraseña',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ChangePasswordPage(),
+                          ),
+                        );
+                      },
                     ),
                     _buildMenuItem(
                       icon: Icons.language_rounded,
                       title: 'Idioma',
                       subtitle: 'Español',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LanguagePage(),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 24),
                     const Text(
@@ -131,13 +165,27 @@ class ProfilePage extends StatelessWidget {
                       icon: Icons.help_outline_rounded,
                       title: 'Ayuda y Soporte',
                       subtitle: '¿Necesitas ayuda?',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HelpSupportPage(),
+                          ),
+                        );
+                      },
                     ),
                     _buildMenuItem(
                       icon: Icons.info_outline_rounded,
                       title: 'Acerca de',
                       subtitle: 'Versión 1.0.0',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AboutPage(),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 24),
                     _buildLogoutButton(context),
