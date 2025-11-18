@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../data/services/password_service.dart';
 
 class ChangePasswordPage extends StatefulWidget {
@@ -63,6 +65,246 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         setState(() => _isLoading = false);
       }
     }
+  }
+
+  void _showForgotPasswordDialog() {
+    final authProvider = context.read<AuthProvider>();
+    final userEmail = authProvider.currentUser?.email ?? '';
+    
+    final codeController = TextEditingController();
+    final newPasswordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+    bool obscureNewPassword = true;
+    bool obscureConfirmPassword = true;
+    bool isLoadingRequest = false;
+    bool codeSent = false;
+    bool isSubmitting = false;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return AlertDialog(
+            title: Text(
+              codeSent ? 'Ingresa el Código' : 'Recuperar Contraseña',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (!codeSent) ...[
+                    const Text(
+                      'Se enviará un código de verificación a tu correo electrónico.',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      userEmail,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ] else ...[
+                    TextField(
+                      controller: codeController,
+                      decoration: const InputDecoration(
+                        labelText: 'Código de verificación',
+                        prefixIcon: Icon(Icons.code),
+                        border: OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.number,
+                      maxLength: 6,
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: newPasswordController,
+                      obscureText: obscureNewPassword,
+                      decoration: InputDecoration(
+                        labelText: 'Nueva contraseña',
+                        prefixIcon: const Icon(Icons.lock),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            obscureNewPassword
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                          ),
+                          onPressed: () {
+                            setDialogState(() {
+                              obscureNewPassword = !obscureNewPassword;
+                            });
+                          },
+                        ),
+                        border: const OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: confirmPasswordController,
+                      obscureText: obscureConfirmPassword,
+                      decoration: InputDecoration(
+                        labelText: 'Confirmar contraseña',
+                        prefixIcon: const Icon(Icons.lock_outline),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            obscureConfirmPassword
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                          ),
+                          onPressed: () {
+                            setDialogState(() {
+                              obscureConfirmPassword = !obscureConfirmPassword;
+                            });
+                          },
+                        ),
+                        border: const OutlineInputBorder(),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: isLoadingRequest || isSubmitting
+                    ? null
+                    : () {
+                        codeController.dispose();
+                        newPasswordController.dispose();
+                        confirmPasswordController.dispose();
+                        Navigator.pop(dialogContext);
+                      },
+                child: const Text('Cancelar'),
+              ),
+              ElevatedButton(
+                onPressed: isLoadingRequest || isSubmitting
+                    ? null
+                    : () async {
+                        if (!codeSent) {
+                          // Solicitar código
+                          setDialogState(() => isLoadingRequest = true);
+                          try {
+                            await _passwordService.requestPasswordResetCode();
+                            setDialogState(() {
+                              codeSent = true;
+                              isLoadingRequest = false;
+                            });
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Código enviado a tu correo'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            setDialogState(() => isLoadingRequest = false);
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(e.toString().replaceAll('Exception: ', '')),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          }
+                        } else {
+                          // Restablecer contraseña
+                          final code = codeController.text.trim();
+                          final newPassword = newPasswordController.text;
+                          final confirmPassword = confirmPasswordController.text;
+
+                          if (code.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Ingresa el código')),
+                            );
+                            return;
+                          }
+
+                          if (newPassword.isEmpty || newPassword.length < 8) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('La contraseña debe tener al menos 8 caracteres'),
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (newPassword != confirmPassword) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Las contraseñas no coinciden')),
+                            );
+                            return;
+                          }
+
+                          setDialogState(() => isSubmitting = true);
+                          try {
+                            await _passwordService.resetPasswordWithCode(
+                              email: userEmail,
+                              code: code,
+                              newPassword: newPassword,
+                            );
+
+                            codeController.dispose();
+                            newPasswordController.dispose();
+                            confirmPasswordController.dispose();
+                            
+                            if (mounted) {
+                              Navigator.pop(dialogContext);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Contraseña restablecida. Por favor inicia sesión nuevamente.'),
+                                  backgroundColor: Colors.green,
+                                  duration: Duration(seconds: 3),
+                                ),
+                              );
+
+                              // Cerrar sesión y redirigir a login
+                              await authProvider.logout();
+                              if (mounted) {
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                  '/login',
+                                  (route) => false,
+                                );
+                              }
+                            }
+                          } catch (e) {
+                            setDialogState(() => isSubmitting = false);
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(e.toString().replaceAll('Exception: ', '')),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          }
+                        }
+                      },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                ),
+                child: isLoadingRequest || isSubmitting
+                    ? const SizedBox(
+                        height: 16,
+                        width: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : Text(codeSent ? 'Restablecer' : 'Enviar Código'),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 
   @override
@@ -209,14 +451,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         ),
                         const SizedBox(height: 16),
                         TextButton(
-                          onPressed: () {
-                            // TODO: Implementar recuperación de contraseña
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Funcionalidad en desarrollo'),
-                              ),
-                            );
-                          },
+                          onPressed: () => _showForgotPasswordDialog(),
                           child: const Text(
                             '¿Olvidaste tu contraseña?',
                             style: TextStyle(

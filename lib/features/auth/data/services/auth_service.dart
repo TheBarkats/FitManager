@@ -85,14 +85,87 @@ class AuthService {
     }
   }
 
-  /// Verifica el token (NOTA: Endpoint pendiente de implementar en backend)
-  Future<bool> verifyToken(String token) async {
+  /// Verifica si el token JWT es válido
+  Future<Map<String, dynamic>?> verifyToken(String token) async {
     try {
-      // TODO: Implementar cuando el backend tenga el endpoint de verificación
-      // Por ahora, simplemente verificamos que el token no esté vacío
-      return token.isNotEmpty;
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/verify-token'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data['valid'] == true ? data : null;
+      }
+      return null;
     } catch (e) {
-      return false;
+      return null;
+    }
+  }
+
+  /// Solicita un código de recuperación de contraseña
+  Future<void> forgotPassword(String email) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/forgot-password'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email}),
+      );
+
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        final error = jsonDecode(response.body);
+        String errorMessage = error['message'] ?? 'Error al solicitar código';
+        
+        if (error['details'] != null && error['details'] is List && (error['details'] as List).isNotEmpty) {
+          errorMessage = error['details'][0];
+        }
+        
+        throw Exception(errorMessage);
+      }
+    } catch (e) {
+      if (e is Exception && e.toString().contains('Exception:')) {
+        rethrow;
+      }
+      throw Exception('Error de conexión: Verifica que el backend esté corriendo');
+    }
+  }
+
+  /// Restablece la contraseña usando el código de verificación
+  Future<void> resetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/reset-password'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email,
+          'code': code,
+          'newPassword': newPassword,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        final error = jsonDecode(response.body);
+        String errorMessage = error['message'] ?? 'Error al restablecer contraseña';
+        
+        if (error['details'] != null && error['details'] is List && (error['details'] as List).isNotEmpty) {
+          errorMessage = error['details'][0];
+        }
+        
+        throw Exception(errorMessage);
+      }
+    } catch (e) {
+      if (e is Exception && e.toString().contains('Exception:')) {
+        rethrow;
+      }
+      throw Exception('Error de conexión: Verifica que el backend esté corriendo');
     }
   }
 }

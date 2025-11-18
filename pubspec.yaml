@@ -47,6 +47,9 @@ dependencies:
   
   # Charts
   fl_chart: ^0.69.0
+  
+  # URL launcher for opening external links
+  url_launcher: ^6.2.5
 
 dev_dependencies:
   flutter_test:

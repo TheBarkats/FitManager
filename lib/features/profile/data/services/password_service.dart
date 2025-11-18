@@ -61,4 +61,66 @@ class PasswordService {
       rethrow;
     }
   }
+
+  /// Solicitar código de restablecimiento de contraseña (cuando el usuario está autenticado)
+  Future<void> requestPasswordResetCode() async {
+    try {
+      final token = await _storage.read(key: 'auth_token');
+      
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/request-password-reset-code'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        final error = jsonDecode(response.body);
+        throw Exception(error['message'] ?? 'Error al solicitar código');
+      }
+    } catch (e) {
+      if (e.toString().contains('SocketException')) {
+        throw Exception('Error de conexión: Verifica que el backend esté corriendo');
+      }
+      rethrow;
+    }
+  }
+
+  /// Restablecer contraseña usando código de verificación (cuando el usuario está autenticado)
+  Future<void> resetPasswordWithCode({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    try {
+      final token = await _storage.read(key: 'auth_token');
+      
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/reset-password-with-code'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'email': email,
+          'code': code,
+          'newPassword': newPassword,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        final error = jsonDecode(response.body);
+        throw Exception(error['message'] ?? 'Error al restablecer contraseña');
+      }
+    } catch (e) {
+      if (e.toString().contains('SocketException')) {
+        throw Exception('Error de conexión: Verifica que el backend esté corriendo');
+      }
+      rethrow;
+    }
+  }
 }

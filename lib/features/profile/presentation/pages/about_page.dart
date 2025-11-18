@@ -1,12 +1,70 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/services/config_service.dart';
 
-class AboutPage extends StatelessWidget {
+class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
 
-  // TODO: Cuando se agregue package_info_plus, obtener dinámicamente
-  static const String _version = '1.0.0';
-  static const String _buildNumber = '1';
+  @override
+  State<AboutPage> createState() => _AboutPageState();
+}
+
+class _AboutPageState extends State<AboutPage> {
+  final _configService = ConfigService();
+  String _version = '1.0.0';
+  String _buildNumber = '1';
+  String? _privacyPolicyUrl;
+  String? _termsUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAppInfo();
+  }
+
+  Future<void> _loadAppInfo() async {
+    try {
+      final appInfo = await _configService.getAppInfo();
+      
+      if (mounted) {
+        setState(() {
+          _version = appInfo['version'] ?? '1.0.0';
+          _buildNumber = appInfo['buildNumber'] ?? '1';
+          _privacyPolicyUrl = appInfo['privacyPolicyUrl'];
+          _termsUrl = appInfo['termsUrl'];
+        });
+      }
+    } catch (e) {
+      // Si falla, mantener valores por defecto
+    }
+  }
+
+  Future<void> _launchURL(String? url, String fallbackMessage) async {
+    if (url == null || url.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(fallbackMessage)),
+        );
+      }
+      return;
+    }
+
+    try {
+      final uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        throw 'No se puede abrir la URL';
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al abrir enlace: $e')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -151,24 +209,18 @@ class AboutPage extends StatelessWidget {
                       _buildLinkTile(
                         icon: Icons.privacy_tip_outlined,
                         title: 'Política de Privacidad',
-                        onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Abriendo política de privacidad...'),
-                            ),
-                          );
-                        },
+                        onTap: () => _launchURL(
+                          _privacyPolicyUrl,
+                          'URL de política de privacidad no configurada',
+                        ),
                       ),
                       _buildLinkTile(
                         icon: Icons.description_outlined,
                         title: 'Términos y Condiciones',
-                        onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Abriendo términos y condiciones...'),
-                            ),
-                          );
-                        },
+                        onTap: () => _launchURL(
+                          _termsUrl,
+                          'URL de términos y condiciones no configurada',
+                        ),
                       ),
                       _buildLinkTile(
                         icon: Icons.security_outlined,

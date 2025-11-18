@@ -1,13 +1,66 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/services/config_service.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../data/services/feedback_service.dart';
 
-class HelpSupportPage extends StatelessWidget {
+class HelpSupportPage extends StatefulWidget {
   const HelpSupportPage({super.key});
+
+  @override
+  State<HelpSupportPage> createState() => _HelpSupportPageState();
+}
+
+class _HelpSupportPageState extends State<HelpSupportPage> {
+  final _feedbackService = FeedbackService();
+  final _configService = ConfigService();
   
-  static final _feedbackService = FeedbackService();
+  String _email = 'soporte@fitmanager.com';
+  String _telefono = '+57 300 123 4567';
+  String? _chatUrl;
+  String? _websiteUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadContactInfo();
+  }
+
+  Future<void> _loadContactInfo() async {
+    try {
+      final contactInfo = await _configService.getContactInfo();
+      
+      if (mounted) {
+        setState(() {
+          _email = contactInfo['email'] ?? 'soporte@fitmanager.com';
+          _telefono = contactInfo['telefono'] ?? '+57 300 123 4567';
+          _chatUrl = contactInfo['chatUrl'];
+          _websiteUrl = contactInfo['websiteUrl'];
+        });
+      }
+    } catch (e) {
+      // Si falla, mantener valores por defecto
+    }
+  }
+
+  Future<void> _launchURL(String url, String errorMessage) async {
+    try {
+      final uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        throw 'No se puede abrir la URL';
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage)),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,53 +130,42 @@ class HelpSupportPage extends StatelessWidget {
                       _buildContactOption(
                         icon: Icons.email_outlined,
                         title: 'Correo Electrónico',
-                        subtitle: 'soporte@fitmanager.com',
-                        onTap: () {
-                          // TODO: Abrir cliente de email
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Abriendo cliente de correo...'),
-                            ),
-                          );
-                        },
+                        subtitle: _email,
+                        onTap: () => _launchURL(
+                          'mailto:$_email',
+                          'No se pudo abrir el cliente de correo',
+                        ),
                       ),
                       _buildContactOption(
                         icon: Icons.phone_outlined,
                         title: 'Teléfono',
-                        subtitle: '+57 300 123 4567',
-                        onTap: () {
-                          // TODO: Abrir marcador
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Abriendo marcador...'),
-                            ),
-                          );
-                        },
+                        subtitle: _telefono,
+                        onTap: () => _launchURL(
+                          'tel:${_telefono.replaceAll(' ', '')}',
+                          'No se pudo abrir el marcador',
+                        ),
                       ),
                       _buildContactOption(
                         icon: Icons.chat_bubble_outline,
                         title: 'Chat en Vivo',
-                        subtitle: 'Horario: Lun-Vie 8am-6pm',
+                        subtitle: _chatUrl != null ? 'Horario: Lun-Vie 8am-6pm' : 'No disponible',
                         onTap: () {
-                          // TODO: Abrir chat
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Chat no disponible'),
-                            ),
-                          );
+                          if (_chatUrl != null) {
+                            _launchURL(_chatUrl!, 'No se pudo abrir el chat');
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Chat no disponible')),
+                            );
+                          }
                         },
                       ),
                       _buildContactOption(
                         icon: Icons.public_outlined,
                         title: 'Sitio Web',
-                        subtitle: 'www.fitmanager.com',
+                        subtitle: _websiteUrl ?? 'www.fitmanager.com',
                         onTap: () {
-                          // TODO: Abrir navegador
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Abriendo navegador...'),
-                            ),
-                          );
+                          final url = _websiteUrl ?? 'https://www.fitmanager.com';
+                          _launchURL(url, 'No se pudo abrir el navegador');
                         },
                       ),
                       const SizedBox(height: 24),

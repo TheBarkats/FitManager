@@ -334,7 +334,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
         ),
         value: value,
         onChanged: onChanged,
-        activeColor: AppColors.primary,
+        activeThumbColor: AppColors.primary,
       ),
     );
   }
