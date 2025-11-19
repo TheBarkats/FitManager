@@ -12,7 +12,7 @@ class ProfileService {
   /// Obtener información del perfil del usuario
   Future<Map<String, dynamic>> getProfile(int userId) async {
     try {
-      final token = await _storage.read(key: 'auth_token');
+      final token = await _storage.read(key: 'access_token');
       
       final response = await http.get(
         Uri.parse('$baseUrl/usuarios/$userId'),
@@ -47,7 +47,7 @@ class ProfileService {
     Map<String, dynamic> data,
   ) async {
     try {
-      final token = await _storage.read(key: 'auth_token');
+      final token = await _storage.read(key: 'access_token');
       
       final response = await http.put(
         Uri.parse('$baseUrl/usuarios/$userId'),

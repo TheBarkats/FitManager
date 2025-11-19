@@ -11,7 +11,7 @@ class NotificationsService {
   /// Obtener preferencias de notificaciones del usuario
   Future<Map<String, dynamic>> getPreferences(int userId) async {
     try {
-      final token = await _storage.read(key: 'auth_token');
+      final token = await _storage.read(key: 'access_token');
       
       final response = await http.get(
         Uri.parse('$baseUrl/usuarios/$userId/notificaciones'),
@@ -54,7 +54,7 @@ class NotificationsService {
     Map<String, bool> preferences,
   ) async {
     try {
-      final token = await _storage.read(key: 'auth_token');
+      final token = await _storage.read(key: 'access_token');
       
       final response = await http.put(
         Uri.parse('$baseUrl/usuarios/$userId/notificaciones'),

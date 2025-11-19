@@ -14,7 +14,7 @@ class FeedbackService {
     required String message,
   }) async {
     try {
-      final token = await _storage.read(key: 'auth_token');
+      final token = await _storage.read(key: 'access_token');
       
       final response = await http.post(
         Uri.parse('$baseUrl/feedback'),
@@ -50,7 +50,7 @@ class FeedbackService {
   /// Obtener feedback del usuario (opcional)
   Future<List<Map<String, dynamic>>> getUserFeedback(int userId) async {
     try {
-      final token = await _storage.read(key: 'auth_token');
+      final token = await _storage.read(key: 'access_token');
       
       final response = await http.get(
         Uri.parse('$baseUrl/feedback/usuario/$userId'),

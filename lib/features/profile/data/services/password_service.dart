@@ -9,12 +9,12 @@ class PasswordService {
   final _storage = const FlutterSecureStorage();
 
   /// Cambiar contraseña del usuario
-  Future<void> changePassword({
+  Future<Map<String, dynamic>> changePassword({
     required String currentPassword,
     required String newPassword,
   }) async {
     try {
-      final token = await _storage.read(key: 'auth_token');
+      final token = await _storage.read(key: 'access_token');
       
       final response = await http.post(
         Uri.parse('$baseUrl/auth/change-password'),
@@ -30,7 +30,7 @@ class PasswordService {
 
       if (response.statusCode == 200) {
         // Contraseña cambiada exitosamente
-        return;
+        return {'message': 'Contraseña cambiada exitosamente'};
       } else if (response.statusCode == 400) {
         final error = jsonDecode(response.body);
         final message = error['message'] ?? 'Datos inválidos';
@@ -65,7 +65,7 @@ class PasswordService {
   /// Solicitar código de restablecimiento de contraseña (cuando el usuario está autenticado)
   Future<void> requestPasswordResetCode() async {
     try {
-      final token = await _storage.read(key: 'auth_token');
+      final token = await _storage.read(key: 'access_token');
       
       final response = await http.post(
         Uri.parse('$baseUrl/auth/request-password-reset-code'),
@@ -95,7 +95,7 @@ class PasswordService {
     required String newPassword,
   }) async {
     try {
-      final token = await _storage.read(key: 'auth_token');
+      final token = await _storage.read(key: 'access_token');
       
       final response = await http.post(
         Uri.parse('$baseUrl/auth/reset-password-with-code'),
